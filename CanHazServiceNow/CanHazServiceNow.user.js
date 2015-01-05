@@ -8,7 +8,18 @@
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // ==/UserScript==
 $.noConflict();
+
 jQuery( document ).ready(function( $ ) {
+
+
+  var idCounter = 0;
+  function rollUp( text,type )
+  {
+    // 'this' is set to the name of this rollup
+    var id = 'isol_rollup_'+(idCounter++);
+
+    return '<div id="'+id+'" data-type="'+type+'" class="isol_rollup">'+text+'</div>';  
+  }
 
   $('select').css( 'width','95%');
 
@@ -56,7 +67,9 @@ jQuery( document ).ready(function( $ ) {
 
       nrow = $('<tr><td class="isol_act_time">'+d[3]+':'+d[4]+'</td><td> - </td><td class="isol_act_title"></td><td class="isol_act_data"><table></table></td></tr>');
       row.find('.activity_date').remove();
-      nrow.find('.isol_act_title').append( row.find( 'span' ) );
+      var title = nrow.find('.isol_act_title');
+      title.append( row.find( 'span' ) );
+      if( title.html().match( /&nbsp;Email sent/ )) { nrow.addClass('isol_emailSent'); }
       table.append( nrow );
     }
 
@@ -74,13 +87,62 @@ jQuery( document ).ready(function( $ ) {
         h+=e.html();
       });
       var html = "<div>"+h+"</div>";
+
+      // clean up double blank lines
       html = html.replace( /(<br>(\s|&nbsp;)*)+<br>/g, '<br><br>' );
+
+      // add CR after <br> to make it easier to work with lines of data
+      html = html.replace( /<br>/g, '<br>\n' );
+
+      // rollups
+      // blocks starting with ">"
+      html = html.replace( /((^\s*&gt;[^\n]*\n)+)/gm, function(text) { return rollUp( text, 'quoted text'); } );
+
+      // quoted messages starting with From:
+      var parts = html.split(/^\s*From:/m, 2 );
+      if( parts.length == 2 )
+      {
+        html =  parts[0] + rollUp( 'From: ' + parts[1], 'quoted text' );
+      }
+
+      // signatures starting with --    
+      var parts = html.split(/^--/m, 2 );
+      if( parts.length == 2 )
+      {
+        html =  parts[0] + rollUp( '--' + parts[1], 'signature' );
+      }
+
+      // hyperlink URLs
       var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
       html = html.replace(exp,"<a target='_blank' style='text-decoration: underline' href='$1'>$1</a>"); 
+
       td.append($(html));
     }
-  });
 
+  });
+  // remove default activity table
+  $('.activity_table').remove();
+
+  // add functions to rollups
+  $('.isol_rollup').each( function(i,roll) { 
+    roll = $(roll);
+    var id = roll.attr("id");
+    var type = roll.attr("data-type");
+    roll.css({ 'border': 'solid 1px #88f','padding':'2px', 'background-color':'#e9e9ff'});
+    var show = $('<div id="'+id+'_show">+ Show '+type+'</div>');
+    var hide = $('<div id="'+id+'hide">- Hide '+type+'</div>');
+    roll.before(show).before(hide);
+    var css = {'background-color':'#88f', 'cursor':'pointer','color':'white','padding':'2px','display':'inline-block','font-size':'80%' };
+    show.css(css).click( function() { roll.show(); show.hide(); hide.show(); } );
+    hide.css(css).click( function() { roll.hide(); show.show(); hide.hide(); } );
+    roll.hide();
+    hide.hide();    
+  });
+  
+  // test button - uncomment for testing
+  //$('#clone_incident_ps').after( $('<button id="test_button" class="form_action_button header action_context" type="submit">test</button>') );
+  //$('#test_button').click( function(){ 
+  //} );
 
   // resolve button
 
@@ -100,12 +162,16 @@ jQuery( document ).ready(function( $ ) {
       }, 500 );
     },500 );
 
-    $('#incident\\.form_scroll').scrollTop($("#tabs2_section").offset().top);
+    $('.tab_caption_text:contains("Closure")').click();
+
+    $('#incident\\.form_scroll').scrollTop($("#tabs2_section").offset().top-100);
  
     $('#incident\\.close_notes').focus();	
   });
 
+  // Remove email-sent rows as they are kinda useless. Maybe make this a toggle later.
+  $('.isol_emailSent').hide();
+
   // Rename Update
   $('#sysverb_update').text('Save and Exit');
-
 });
