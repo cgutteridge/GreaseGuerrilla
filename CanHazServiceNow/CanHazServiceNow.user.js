@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        CanHazServiceNow
 // @namespace   http://totl.net/
 // @description Service Now Ticket Page Deshonkification
@@ -10,7 +10,6 @@
 $.noConflict();
 
 jQuery( document ).ready(function( $ ) {
-
 
   var idCounter = 0;
   function rollUp( text,type )
