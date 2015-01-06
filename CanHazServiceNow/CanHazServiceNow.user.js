@@ -41,8 +41,13 @@ jQuery( document ).ready(function( $ ) {
   $('.activity_table .activity_header').addClass( 'isol_activity_row' );
   $('.activity_table .activity_data').addClass( 'isol_activity_row' );
 
+  // build up a dataset (in grid) describing all the stuff so we can show it both ways 
+  // around (chrono and rev chrono)
   var nrow;
   var prevdatetxt='9999-99-99';
+  var grid = [];
+  var gridThing;
+  var lastThing;
   $('.activity_table .isol_activity_row').each( function(i,row) { 
     row=$(row);
     if( row.hasClass('activity_header') )
@@ -60,7 +65,11 @@ jQuery( document ).ready(function( $ ) {
       {
         var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
         var d_names = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
-        table.append( $('<tr><td colspan="4" style="font-size:120%;font-weight:bold;padding-top: 20px">'+d_names[date.getDay()]+', '+d[0]+' '+m_names[d[1]-1]+'</td></tr>' ));
+
+        gridThing = { 'date':null, 'notes':[] };
+        grid.push(gridThing);
+    
+        gridThing.date = $('<tr><td colspan="4" style="font-size:120%;font-weight:bold;padding-top: 20px">'+d_names[date.getDay()]+', '+d[0]+' '+m_names[d[1]-1]+'</td></tr>' );
       }
       prevdatetxt=datetxt;
 
@@ -69,15 +78,16 @@ jQuery( document ).ready(function( $ ) {
       var title = nrow.find('.isol_act_title');
       title.append( row.find( 'span' ) );
       if( title.html().match( /&nbsp;Email sent/ )) { nrow.addClass('isol_emailSent'); }
-      table.append( nrow );
-    }
+      lastThing = { 'head':nrow,'data':[] };
+      gridThing.notes.push( lastThing );
+    };
 
     if( row.hasClass('activity_data') )
     {
       var tr = $('<tr><td></td><td></td></tr>');
       var td = $('<td colspan="2"></td>');
+      lastThing.data.push( tr );
       tr.append(td);
-      table.append(tr);
       row.find('td td table').appendTo(td);
       nrow.find('.isol_act_data>table').append( row.find('td tr') );
       var h="";
@@ -119,6 +129,41 @@ jQuery( document ).ready(function( $ ) {
     }
 
   });
+
+  // render the 'grid' dataset onto the page
+  tableDefault();
+
+  function tableDefault()
+  {
+    for(var i=0;i<grid.length;i++)
+    {
+      table.append( grid[i].date );
+      for(var j=0;j<grid[i].notes.length;j++)
+      { 
+        table.append( grid[i].notes[j].head);
+        for(var k=0;k<grid[i].notes[j].data.length;k++)
+        { 
+          table.append( grid[i].notes[j].data[k]);
+        }
+      }
+    }
+  }
+  function tableReverse()
+  {
+    for(var i=grid.length-1;i>=0;i--)
+    {
+      table.append( grid[i].date );
+      for(var j=grid[i].notes.length-1;j>=0;j--)
+      { 
+        table.append( grid[i].notes[j].head);
+        for(var k=grid[i].notes[j].data.length-1;k>=0;k--)
+        { 
+          table.append( grid[i].notes[j].data[k]);
+        }
+      }
+    }
+  }
+
   // remove default activity table
   $('.activity_table').remove();
 
@@ -131,17 +176,38 @@ jQuery( document ).ready(function( $ ) {
     var show = $('<div id="'+id+'_show">+ Show '+type+'</div>');
     var hide = $('<div id="'+id+'hide">- Hide '+type+'</div>');
     roll.before(show).before(hide);
-    var css = {'background-color':'#88f', 'cursor':'pointer','color':'white','padding':'2px','display':'inline-block','font-size':'80%' };
+    var css = {'background-color':'#88f', 'cursor':'pointer','color':'white','padding':'2px 8px 2px 4px','display':'inline-block','font-size':'80%' };
     show.css(css).click( function() { roll.show(); show.hide(); hide.show(); } );
     hide.css(css).click( function() { roll.hide(); show.show(); hide.hide(); } );
     roll.hide();
     hide.hide();    
   });
-  
+ 
+  function formScrollTo( thing )
+  {
+    var scrolled = $('#incident\\.do').offset().top;
+    var pos = thing.offset().top - scrolled;
+    $('#incident\\.form_scroll').scrollTop( pos - 40 ); // the 40 is to skip the top bar
+  }
+ 
   // test button - uncomment for testing
   //$('#clone_incident_ps').after( $('<button id="test_button" class="form_action_button header action_context" type="submit">test</button>') );
   //$('#test_button').click( function(){ 
   //} );
+
+  // notes buttons 
+  $('#sysverb_update').before( $('<button id="rnotes_button" class="form_action_button header action_context" type="submit">Latest</button>') );
+  $('#rnotes_button').click( function(){ 
+    $('.tab_caption_text:contains("Notes")').click();
+    tableDefault();
+    formScrollTo( table );
+  } );
+  $('#sysverb_update').before( $('<button id="notes_button" class="form_action_button header action_context" type="submit">Notes</button>') );
+  $('#notes_button').click( function(){ 
+    $('.tab_caption_text:contains("Notes")').click();
+    tableReverse();
+    formScrollTo( table );
+  } );
 
   // resolve button
 
@@ -163,7 +229,7 @@ jQuery( document ).ready(function( $ ) {
 
     $('.tab_caption_text:contains("Closure")').click();
 
-    $('#incident\\.form_scroll').scrollTop($("#tabs2_section").offset().top-100);
+    formScrollTo( $("#tabs2_section") );
  
     $('#incident\\.close_notes').focus();	
   });
