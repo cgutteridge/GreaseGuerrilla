@@ -36,13 +36,8 @@ jQuery( document ).ready(function( $ ) {
     $('<div style="font-size:150%;font-weight:bold;text-align:center">'+$('#incident\\.short_description').val()+'</div>')
   );
 
-  // Move back to the notes tab if this has opened with a different tab open
-  // The tabs are added *after* this script runs, so hence the delay. It would
-  // be better to find out what's making it open the same tab as last time and
-  // modify that (could be a cookie?)
-  setTimeout( function() {
-    $('.tab_caption_text:contains("Notes")').click();
-  }, 250 );
+  // Move back to the notes tab even if this has opened with a different tab open
+  document.cookie = "__CJ_tabs2_section_incident=%220%22; path=/";
 
   // add some new css classes to make it easier to find all the rows we
   // want to get data from.
