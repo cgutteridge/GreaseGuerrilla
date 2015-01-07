@@ -7,13 +7,25 @@
 // @require       https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
 // ==/UserScript==
 
+// you can add personal choices to augment the general list.
+// however these will be erased if you upgrade the script so keep a backup somewhere safe.
+// Make sure that you escape any ' with a backslash. eg. ain\'t. 
+var personal_responses = [
+ 'Example personal response.',
+ 'Another example personal response.'
+];
+
 $.noConflict();
 jQuery( document ).ready(function( $ ) {
   $('body').append( '<script src="https://secure.ecs.soton.ac.uk/data/faq.js"></script>' );
 
   var button = $("<button>Default Responses</button>");
   button.click( function() {
-    var isol_responses = window.isol_responses;
+    var isol_responses = personal_responses;
+    for( var i=0;i<window.isol_responses.length; ++i ) {
+      isol_responses.push( window.isol_responses[i] );
+    }
+    
     var popup = $('<div style=" height: 100%; width: 100%; font-size:130%; position: fixed; top: 0%; left: 0%; z-index: 2000; background-color: white; overflow: scroll"></div>');
     var closePopup = function() { 
       popup.remove(); 
@@ -55,7 +67,8 @@ jQuery( document ).ready(function( $ ) {
     {
       popup.append( $('<div class="isol_popup_result" style="background-color: #eef;padding:2px;margin:1em;cursor:pointer"></div>').text(isol_responses[i]).click( function() { 
         // if this selection is clicked then set the textarea to the value and close the popup
-        $('#incident\\.close_notes').val( this )
+        // adds a space after too, so you can just type another sentence if needed.
+        $('#incident\\.close_notes').val( this+" " );
         closePopup();
       }.bind( isol_responses[i] )) ); // the bind sets 'this' in the function to be the text
     }
