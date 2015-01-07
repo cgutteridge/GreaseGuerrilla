@@ -230,8 +230,8 @@ jQuery( document ).ready(function( $ ) {
       setTimeout( function() {
         $('#incident\\.u_close_item').val( $('#incident\\.u_item').val() );
         onChange('incident.u_close_item');
-      }, 500 );
-    },500 );
+      }, 1000 );
+    },1000 );
 
     $('.tab_caption_text:contains("Closure")').click();
 
