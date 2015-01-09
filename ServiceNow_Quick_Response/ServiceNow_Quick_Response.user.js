@@ -21,7 +21,10 @@ jQuery( document ).ready(function( $ ) {
 
   var button = $("<button>Default Responses</button>");
   button.click( function() {
-    var isol_responses = personal_responses;
+    var isol_responses = [];
+    for( var i=0;i<personal_responses.length; ++i ) {
+      isol_responses.push( personal_responses[i] );
+    }
     for( var i=0;i<window.isol_responses.length; ++i ) {
       isol_responses.push( window.isol_responses[i] );
     }
