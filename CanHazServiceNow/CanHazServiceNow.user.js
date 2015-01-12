@@ -201,6 +201,21 @@ jQuery( document ).ready(function( $ ) {
   //$('#test_button').click( function(){ 
   //} );
 
+
+  $('#sysverb_update').before( $('<button id="hidesent_button" class="form_action_button header action_context" type="submit">Hide Sent</button>') );
+  $('#hidesent_button').click( function(){ 
+    $('.isol_emailSent').hide();
+    $('#hidesent_button').hide();
+    $('#showsent_button').show();
+  });
+  $('#hidesent_button').hide();
+  $('#sysverb_update').before( $('<button id="showsent_button" class="form_action_button header action_context" type="submit">Show Sent</button>') );
+  $('#showsent_button').click( function(){ 
+    $('.isol_emailSent').show();
+    $('#hidesent_button').show();
+    $('#showsent_button').hide();
+  });
+
   // notes buttons 
   $('#sysverb_update').before( $('<button id="rnotes_button" class="form_action_button header action_context" type="submit">Latest</button>') );
   $('#rnotes_button').click( function(){ 
