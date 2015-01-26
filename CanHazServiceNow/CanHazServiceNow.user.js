@@ -11,6 +11,7 @@ $.noConflict();
 
 jQuery( document ).ready(function( $ ) {
 
+
   var idCounter = 0;
   function rollUp( text,type )
   {
@@ -260,4 +261,8 @@ jQuery( document ).ready(function( $ ) {
 
   // Rename Update
   $('#sysverb_update').text('Save and Exit');
+
+  // set top title to title of this iframe
+  top.document.title=window.document.title;
+
 });
