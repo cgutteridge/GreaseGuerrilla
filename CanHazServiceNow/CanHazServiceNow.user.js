@@ -263,6 +263,6 @@ jQuery( document ).ready(function( $ ) {
   $('#sysverb_update').text('Save and Exit');
 
   // set top title to title of this iframe
-  top.document.title=window.document.title;
+  top.document.title=$('#sys_readonly\\.incident\\.number').val()+" "+$('#incident\\.short_description').val()
 
 });
