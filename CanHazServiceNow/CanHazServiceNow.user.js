@@ -261,6 +261,8 @@ jQuery( document ).ready(function( $ ) {
 
   // Rename Update
   $('#sysverb_update').text('Save and Exit');
+  $('#resolve_button').after( $('#sysverb_update_and_stay') );
+  $('#resolve_button').after( $('#sysverb_update') );
 
   // set top title to title of this iframe
   top.document.title=$('#sys_readonly\\.incident\\.number').val()+" "+$('#incident\\.short_description').val()
