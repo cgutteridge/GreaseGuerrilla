@@ -261,6 +261,8 @@ jQuery( document ).ready(function( $ ) {
 
   // Rename Update
   $('#sysverb_update').text('Save and Exit');
+
+  // Move save buttons to end of list
   $('#resolve_button').after( $('#sysverb_update_and_stay') );
   $('#resolve_button').after( $('#sysverb_update') );
 
