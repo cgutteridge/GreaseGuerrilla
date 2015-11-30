@@ -4,7 +4,7 @@
 // @description Service Now Ticket Page Deshonkification
 // @include     https://sotonproduction.service-now.com/incident.do*
 // @include     https://sotonpreproduction.service-now.com/incident.do*
-// @version     1
+// @version     2
 // @grant       none
 // ==/UserScript==
 
