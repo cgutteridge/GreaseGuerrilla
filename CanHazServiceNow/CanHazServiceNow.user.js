@@ -42,7 +42,7 @@ jQuery( document ).ready(function( $ ) {
   $('#element\\.incident\\.u_as_request').addClass("isol_dull_field");
  
   // add heading with ticket short desc to the top
-  var titlediv = $('<div style="text-align:center"><span style="font-size:150%;font-weight:bold;">'+$('#incident\\.short_description').val()+'</span></div>');
+  var titlediv = $('<div style="text-align:center"> <span style="font-size:150%;font-weight:bold;">'+$('#incident\\.short_description').val()+'</span></div>');
   $('#header_attachment').after( titlediv );
 
   // Move back to the notes tab even if this has opened with a different tab open
