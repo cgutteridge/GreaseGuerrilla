@@ -23,7 +23,7 @@ jQuery( document ).ready(function( $ ) {
   $('.col-sm-6 .form-group .control-label').removeClass('col-lg-4').addClass( 'col-lg-2').css( 'font-size','90%');
   $('.col-sm-6 .form-group .input_controls').removeClass('col-lg-5').addClass( 'col-lg-8');
 
-  $('.mandatory_populated').addClass("isol_dull_field");
+  $('.required-marker:visible').addClass("isol_dull_field");
   $('#element\\.incident\\.number').addClass("isol_dull_field");
   $('#element\\.incident\\.u_logged_for').addClass("isol_dull_field");
   $('#element\\.incident\\.location').addClass("isol_dull_field");
